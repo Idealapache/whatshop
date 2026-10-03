@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diva Muse Events</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <a href="/" class="brand">Diva Muse Events</a>
+        <a href="/cart" class="cart-link">
+            Cart <span id="cart-count" class="badge">0</span>
+        </a>
+    </header>
+
+    <main>
+        <div class="page-head">
+            <h1>Products</h1>
+            <p class="muted">{{ products|length }} items</p>
+        </div>
+
+        {% if products %}
+        <div class="product-grid">
+            {% for p in products %}
+            <div class="product-card">
+                <a href="/product/{{ p.id }}" class="product-link">
+                    <div class="product-thumb">
+                        {% if p.image %}
+                        <img src="/static/uploads/{{ p.image }}" alt="{{ p.name }}">
+                        {% else %}
+                        <span class="thumb-letter">{{ p.name[0] }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <h3>{{ p.name }}</h3>
+                        <p class="price">₦{{ "{:,}".format(p.price) }}</p>
+                    </div>
+                </a>
+                <button class="quick-add" onclick="quickAdd({{ p.id }}, '{{ p.name }}', {{ p.price }})">
+                    Add to cart
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty">No products yet.</p>
+        {% endif %}
+    </main>
+
+    <script>
+    function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const count = cart.reduce((s, i) => s + i.qty, 0);
+        document.getElementById("cart-count").textContent = count;
+    }
+
+    function quickAdd(id, name, price) {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const existing = cart.find(i => i.id === id);
+        if (existing) existing.qty += 1;
+        else cart.push({ id, name, price, qty: 1 });
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCartCount();
+    }
+
+    updateCartCount();
+
+    </script>
+</body>
+</html>

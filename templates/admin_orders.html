@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<header class="admin-header">
+    <h1>Orders</h1>
+    <div>
+        <a href="/admin" class="link">products</a>
+        <a href="/admin/logout" class="link">logout</a>
+    </div>
+</header>
+<ul class="admin-list">
+    {% for o in orders %}
+    <li>
+        <div class="row">
+            <strong>{{ o.customer_name }}</strong>
+            <span>₦{{ "{:,}".format(o.total) }}</span>
+        </div>
+        <div class="row small">
+            <span>{{ o.customer_phone }}</span>
+            <span>{{ o.created_at.strftime("%b %d, %H:%M") }}</span>
+        </div>
+        <pre class="items">{{ o.items_summary }}</pre>
+        <div class="row">
+            <span class="status {{ o.status }}">{{ o.status }}</span>
+            <div class="actions">
+                <form method="post" action="/admin/orders/{{ o.id }}/status/paid" style="display:inline"><button class="link">paid</button></form>
+                <form method="post" action="/admin/orders/{{ o.id }}/status/delivered" style="display:inline"><button class="link">delivered</button></form>
+                <form method="post" action="/admin/orders/{{ o.id }}/status/cancelled" style="display:inline"><button class="link danger">cancel</button></form>
+            </div>
+        </div>
+    </li>
+    {% else %}
+    <li class="empty">No orders yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

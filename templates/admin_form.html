@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if product %}Edit{% else %}New{% endif %} product</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="admin-shell">
+        <a href="/admin" class="back">← Back</a>
+        <h1 style="margin-bottom: 24px;">{% if product %}Edit{% else %}New{% endif %} product</h1>
+
+        <form method="post" enctype="multipart/form-data" class="admin-form">
+            <label>
+                Name
+                <input type="text" name="name" value="{{ product.name if product else '' }}" required>
+            </label>
+            <label>
+                Price (₦)
+                <input type="number" name="price" value="{{ product.price if product else '' }}" required>
+            </label>
+            <label>
+                Image
+                <input type="file" name="image" accept="image/*">
+            </label>
+            <label>
+                Description
+                <textarea name="description" rows="4">{{ product.description or '' if product else '' }}</textarea>
+            </label>
+
+            {% if product and product.image %}
+            <div class="current-image">
+                <p class="muted" style="font-size: 0.85rem; margin-bottom: 8px;">Current image</p>
+                <img src="/static/uploads/{{ product.image }}" alt="{{ product.name }}">
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn-primary">Save product</button>
+        </form>
+    </div>
+</body>
+</html>

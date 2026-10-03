@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <a href="/" class="brand">Diva Muse Events</a>
+        <a href="/cart" class="cart-link">Cart <span id="cart-count" class="badge">0</span></a>
+    </header>
+
+    <main>
+        <a href="/" class="back">← Back</a>
+        <h1>Your cart</h1>
+
+        <div id="cart-items"></div>
+        <div id="cart-total" class="total"></div>
+
+        <form id="checkout-form" style="display:none">
+            <input type="text" id="name" placeholder="Your name" required>
+            <input type="tel" id="phone" placeholder="Your phone" required>
+            <button type="submit" class="btn-primary">Order on WhatsApp</button>
+        </form>
+
+        <p id="empty-msg" class="empty" style="display:none">Cart is empty.</p>
+    </main>
+
+   <script>
+    function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        document.getElementById("cart-count").textContent = cart.reduce((s, i) => s + i.qty, 0);
+    }
+
+    function renderCart() {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const container = document.getElementById("cart-items");
+        const totalEl = document.getElementById("cart-total");
+        const form = document.getElementById("checkout-form");
+        const empty = document.getElementById("empty-msg");
+
+        updateCartCount();
+
+        if (cart.length === 0) {
+            container.innerHTML = "";
+            totalEl.textContent = "";
+            form.style.display = "none";
+            empty.style.display = "block";
+            return;
+        }
+
+        empty.style.display = "none";
+        form.style.display = "flex";
+
+        let html = "<ul class='cart-list'>";
+        let total = 0;
+        cart.forEach(item => {
+            const subtotal = item.price * item.qty;
+            total += subtotal;
+            html += `
+                <li>
+                    <span>${item.name} <span class="muted">x${item.qty}</span></span>
+                    <span class="cart-right">
+                        <span>₦${subtotal.toLocaleString()}</span>
+                        <button class="remove-btn" onclick="removeItem(${item.id})">Remove</button>
+                    </span>
+                </li>`;
+        });
+        html += "</ul>";
+        container.innerHTML = html;
+        totalEl.textContent = "Total: ₦" + total.toLocaleString();
+    }
+
+    function removeItem(id) {
+        let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        cart = cart.filter(i => i.id !== id);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        renderCart();
+    }
+
+    document.getElementById("checkout-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const name = document.getElementById("name").value;
+        const phone = document.getElementById("phone").value;
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+        const res = await fetch("/checkout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, phone, items: cart })
+        });
+        const data = await res.json();
+        if (data.whatsapp) {
+            localStorage.removeItem("cart");
+            window.location.href = data.whatsapp;
+        }
+    });
+
+    renderCart();
+</script>
+</body>
+</html>

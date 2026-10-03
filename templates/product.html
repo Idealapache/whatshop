@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <a href="/" class="brand">Diva Muse Events</a>
+        <a href="/cart" class="cart-link">Cart <span id="cart-count" class="badge">0</span></a>
+    </header>
+
+    <main>
+        <a href="/" class="back">← Back</a>
+
+        <div class="detail">
+            <div class="detail-thumb">
+                {% if product.image %}
+                <img src="/static/uploads/{{ product.image }}" alt="{{ product.name }}">
+                {% else %}
+                <span class="thumb-letter">{{ product.name[0] }}</span>
+                {% endif %}
+            </div>
+            <div class="detail-info">
+                <h1>{{ product.name }}</h1>
+                <p class="price-lg">₦{{ "{:,}".format(product.price) }}</p>
+                {% if product.description %}
+                    <p class="description">{{ product.description }}</p>
+                {% endif %}
+                <button onclick="addToCart({{ product.id }}, '{{ product.name }}', {{ product.price }})" class="btn-primary">
+                    Add to cart
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+            document.getElementById("cart-count").textContent = cart.reduce((s, i) => s + i.qty, 0);
+        }
+        updateCartCount();
+
+        function addToCart(id, name, price) {
+            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+            const existing = cart.find(i => i.id === id);
+            if (existing) existing.qty += 1;
+            else cart.push({ id, name, price, qty: 1 });
+            localStorage.setItem("cart", JSON.stringify(cart));
+            updateCartCount();
+            alert(name + " added to cart");
+        }
+    </script>
+</body>
+</html>
