@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Your selection{% endblock %}
+{% block content %}
+<a href="/" class="back">← Back</a>
+<h1>Your selection</h1>
+
+<div id="sel-items"></div>
+<div id="sel-total" class="total"></div>
+
+<div class="note">
+    <strong>Note:</strong> Delivery, setup and logistics charges are calculated separately and confirmed after your booking request is reviewed.
+</div>
+
+<a href="/book" id="book-btn" class="btn btn-primary" style="display:none">Request booking</a>
+
+<p id="empty-msg" class="empty">Your selection is empty.</p>
+
+<script>
+function render() {
+    const cart = JSON.parse(localStorage.getItem("selection") || "[]");
+    const container = document.getElementById("sel-items");
+    const totalEl = document.getElementById("sel-total");
+    const btn = document.getElementById("book-btn");
+    const empty = document.getElementById("empty-msg");
+
+    if (cart.length === 0) {
+        container.innerHTML = "";
+        totalEl.textContent = "";
+        btn.style.display = "none";
+        empty.style.display = "block";
+        return;
+    }
+
+    empty.style.display = "none";
+    btn.style.display = "inline-block";
+
+    let html = "<ul class='cart-list'>";
+    let total = 0;
+    cart.forEach(item => {
+        const sub = item.price * item.qty;
+        total += sub;
+        html += `<li>
+            <span>${item.name} <span class="muted">x${item.qty}</span></span>
+            <span class="cart-right">
+                <span>₦${sub.toLocaleString()}</span>
+                <button class="remove-btn" onclick="removeItem(${item.id})">Remove</button>
+            </span>
+        </li>`;
+    });
+    html += "</ul>";
+    container.innerHTML = html;
+    totalEl.textContent = "Estimated rental total: ₦" + total.toLocaleString();
+    if (window.updateSelCount) updateSelCount();
+}
+function removeItem(id) {
+    let cart = JSON.parse(localStorage.getItem("selection") || "[]");
+    cart = cart.filter(i => i.id !== id);
+    localStorage.setItem("selection", JSON.stringify(cart));
+    render();
+}
+render();
+</script>
+{% endblock %}

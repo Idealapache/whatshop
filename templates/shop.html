@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Shop by Item — {{ config.BUSINESS_NAME }}{% endblock %}
+{% block content %}
+<a href="/" class="back">← Back</a>
+<h1>Shop by Item</h1>
+
+{% if groups %}
+    {% for g in groups %}
+    <section class="category-section">
+        <h2>{{ g.category.name }}</h2>
+        <div class="grid">
+            {% for p in g.products %}
+            <a class="card" href="/product/{{ p.id }}">
+                <div class="card-image">
+                    {% if p.image %}
+                    <img src="/static/uploads/{{ p.image }}" alt="{{ p.name }}">
+                    {% else %}
+                    <div class="card-placeholder">{{ p.name[0] }}</div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h3>{{ p.name }}</h3>
+                    <p class="price">₦{{ "{:,}".format(p.price) }}</p>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endfor %}
+{% else %}
+<p class="empty">No items yet.</p>
+{% endif %}
+{% endblock %}

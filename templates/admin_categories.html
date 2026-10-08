@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="admin-shell">
+    <a href="/admin" class="back">← Admin</a>
+    <header class="admin-header">
+        <h1>Categories</h1>
+        <a href="/admin/categories/new" class="btn">+ New</a>
+    </header>
+    <ul class="admin-list">
+        {% for c in categories %}
+        <li>
+            <div class="row">
+                <strong>{{ c.name }}</strong>
+                <span class="muted">/{{ c.slug }}</span>
+            </div>
+            <div class="row small">
+                <span>Order: {{ c.sort_order }}</span>
+                <div>
+                    <a href="/admin/categories/{{ c.id }}/edit" class="link">edit</a>
+                    <form method="post" action="/admin/categories/{{ c.id }}/delete" style="display:inline" onsubmit="return confirm('Delete?')">
+                        <button class="link danger">delete</button>
+                    </form>
+                </div>
+            </div>
+        </li>
+        {% else %}
+        <li class="empty">No categories yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

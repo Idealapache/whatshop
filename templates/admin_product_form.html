@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="admin-shell narrow">
+    <a href="/admin/products" class="back">← Back</a>
+    <h1>{% if product %}Edit{% else %}New{% endif %} item</h1>
+    <form method="post" enctype="multipart/form-data" class="form-section">
+        <label>Name<input type="text" name="name" value="{{ product.name if product else '' }}" required></label>
+        <label>Description<textarea name="description" rows="3">{{ product.description or '' if product else '' }}</textarea></label>
+        <label>Price (₦)<input type="number" name="price" value="{{ product.price if product else '' }}" required></label>
+        <label>Category
+    <select name="category_id">
+        <option value="">— None —</option>
+        {% for c in categories %}
+        <option value="{{ c.id }}" {% if product and product.category_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+        {% endfor %}
+    </select>
+</label>
+<p class="hint">Tip: for ready-made setups like "30 Guest Birthday Setup", choose the <strong>Packages</strong> category. Those show up under "Shop by Event".</p>
+        <label>Image<input type="file" name="image" accept="image/*"></label>
+        {% if product and product.image %}
+        <div class="current-image">
+            <p class="muted">Current:</p>
+            <img src="/static/uploads/{{ product.image }}" alt="">
+        </div>
+        {% endif %}
+        <label class="checkbox"><input type="checkbox" name="active" {% if not product or product.active %}checked{% endif %}> Active (visible on site)</label>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
+{% endblock %}

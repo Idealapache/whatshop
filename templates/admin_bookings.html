@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="admin-shell">
+    <a href="/admin" class="back">← Admin</a>
+    <h1>Bookings</h1>
+    <ul class="admin-list">
+        {% for b in bookings %}
+        <li>
+            <div class="row">
+                <strong>{{ b.client_name }}</strong>
+                <span>₦{{ "{:,}".format(b.estimated_total) }}</span>
+            </div>
+            <div class="row small">
+                <span>{{ b.client_phone }}</span>
+                <span>{{ b.created_at.strftime("%b %d, %H:%M") }}</span>
+            </div>
+            <div class="booking-meta">
+                {% if b.event_type %}<span>{{ b.event_type }}</span>{% endif %}
+                {% if b.event_date %}<span>{{ b.event_date }}</span>{% endif %}
+                {% if b.area %}<span>{{ b.area }}</span>{% endif %}
+            </div>
+            <pre class="items">{{ b.items_summary }}</pre>
+            <div class="row">
+                <span class="status {{ b.status }}">{{ b.status }}</span>
+                <div class="actions">
+                    <form method="post" action="/admin/bookings/{{ b.id }}/status/reviewed" style="display:inline"><button class="link">reviewed</button></form>
+                    <form method="post" action="/admin/bookings/{{ b.id }}/status/invoiced" style="display:inline"><button class="link">invoiced</button></form>
+                    <form method="post" action="/admin/bookings/{{ b.id }}/status/paid" style="display:inline"><button class="link">paid</button></form>
+                    <form method="post" action="/admin/bookings/{{ b.id }}/status/cancelled" style="display:inline"><button class="link danger">cancel</button></form>
+                    <form method="post" action="/admin/bookings/{{ b.id }}/delete" style="display:inline" onsubmit="return confirm('Delete?')"><button class="link danger">delete</button></form>
+                </div>
+            </div>
+        </li>
+        {% else %}
+        <li class="empty">No bookings yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

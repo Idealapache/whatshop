@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="admin-shell">
+    <header class="admin-header">
+        <h1>Admin</h1>
+        <a href="/admin/logout" class="link">Logout</a>
+    </header>
+
+    <div class="stats">
+        <div class="stat"><span class="num">{{ counts.products }}</span><span class="lbl">Items</span></div>
+        <div class="stat"><span class="num">{{ counts.categories }}</span><span class="lbl">Categories</span></div>
+        <div class="stat"><span class="num">{{ counts.bookings }}</span><span class="lbl">Bookings</span></div>
+        <div class="stat highlight"><span class="num">{{ counts.new_bookings }}</span><span class="lbl">New</span></div>
+    </div>
+
+    <div class="admin-links">
+        <a href="/admin/categories" class="big-btn-link">
+            <strong>Categories</strong>
+            <span>Chairs, tables, tents, packages...</span>
+        </a>
+        <a href="/admin/products" class="big-btn-link">
+            <strong>Items</strong>
+            <span>Add or edit products and packages</span>
+        </a>
+        <a href="/admin/bookings" class="big-btn-link">
+            <strong>Bookings</strong>
+            <span>View incoming requests</span>
+        </a>
+        <a href="/" class="big-btn-link">
+            <strong>View site</strong>
+            <span>See what customers see</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

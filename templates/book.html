@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Request booking{% endblock %}
+{% block content %}
+<a href="/selection" class="back">← Back to selection</a>
+<h1>Request booking</h1>
+<p class="lead">Fill this in and we'll confirm availability, logistics and send your invoice.</p>
+
+<form method="post" id="book-form" class="form-section">
+    <input type="hidden" name="items" id="items-input">
+
+    <h2>Your details</h2>
+    <label>Full name<input type="text" name="client_name" required></label>
+    <label>Phone number<input type="tel" name="client_phone" required></label>
+    <label>WhatsApp number<input type="tel" name="client_whatsapp"></label>
+    <label>Email<input type="email" name="client_email"></label>
+
+    <h2>Event details</h2>
+    <label>Event type<input type="text" name="event_type" placeholder="Birthday, Wedding..."></label>
+    <label>Event date<input type="date" name="event_date"></label>
+    <label>Start time<input type="time" name="event_time"></label>
+    <label>Number of guests<input type="number" name="guest_count"></label>
+
+    <h2>Location</h2>
+    <label>Venue name<input type="text" name="venue"></label>
+    <label>Exact address<textarea name="address" rows="2"></textarea></label>
+    <label>Area / location<input type="text" name="area"></label>
+    <label>Landmark<input type="text" name="landmark"></label>
+
+    <h2>Service requirements</h2>
+    <label class="checkbox"><input type="checkbox" name="needs_delivery"> Delivery required</label>
+    <label class="checkbox"><input type="checkbox" name="needs_setup"> Setup required</label>
+    <label class="checkbox"><input type="checkbox" name="needs_pickup"> Pickup required</label>
+    <label class="checkbox"><input type="checkbox" name="own_transport"> I'll arrange transportation</label>
+    <label class="checkbox"><input type="checkbox" name="needs_logistics"> I need help with logistics</label>
+
+    <h2>Anything else</h2>
+    <label>Notes<textarea name="notes" rows="4" placeholder="Tell us anything else we should know."></textarea></label>
+
+    <button type="submit" class="btn btn-primary">Submit request</button>
+</form>
+
+<script>
+document.getElementById("book-form").addEventListener("submit", function() {
+    const cart = JSON.parse(localStorage.getItem("selection") || "[]");
+    document.getElementById("items-input").value = JSON.stringify(cart);
+});
+</script>
+{% endblock %}

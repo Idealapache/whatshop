@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Shop by Event — {{ config.BUSINESS_NAME }}{% endblock %}
+{% block content %}
+<a href="/" class="back">← Back</a>
+<h1>Shop by Event</h1>
+<p class="lead">Pick your event type and guest count — we'll show setups that fit.</p>
+
+<form method="get" class="event-form">
+    <label>
+        Event type
+        <select name="event">
+            <option value="">Any</option>
+            {% for e in ["Birthday", "Wedding", "Proposal", "Kiddies", "Party", "Corporate"] %}
+            <option value="{{ e }}" {% if event == e %}selected{% endif %}>{{ e }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>
+        Guest count
+        <select name="guests">
+            <option value="">Any</option>
+            {% for g in ["10", "20", "30", "50", "100", "200"] %}
+            <option value="{{ g }}" {% if guests == g %}selected{% endif %}>{{ g }} guests</option>
+            {% endfor %}
+        </select>
+    </label>
+    <button type="submit" class="btn">Show setups</button>
+</form>
+
+{% if packages %}
+<div class="grid">
+    {% for p in packages %}
+    <a class="card" href="/product/{{ p.id }}">
+        <div class="card-image">
+            {% if p.image %}
+            <img src="/static/uploads/{{ p.image }}" alt="{{ p.name }}">
+            {% else %}
+            <div class="card-placeholder">{{ p.name[0] }}</div>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <h3>{{ p.name }}</h3>
+            <p class="price">₦{{ "{:,}".format(p.price) }}</p>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<p class="empty">No setups yet.</p>
+{% endif %}
+{% endblock %}

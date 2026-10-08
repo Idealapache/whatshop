@@ -1,49 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin — Products</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-    <div class="admin-shell">
-        <div class="admin-top">
-            <h1>Products</h1>
-            <div class="admin-actions">
-                <a href="/">View site</a>
-                <a href="/admin/logout">Logout</a>
-                <a href="/admin/products/new" class="btn-new">+ New product</a>
+{% extends "base.html" %}
+{% block content %}
+<div class="admin-shell">
+    <a href="/admin" class="back">← Admin</a>
+    <header class="admin-header">
+        <h1>Items</h1>
+        <a href="/admin/products/new" class="btn">+ New</a>
+    </header>
+    <ul class="admin-list">
+        {% for p in products %}
+        <li>
+            <div class="row">
+                <strong>{{ p.name }}</strong>
+                <span>₦{{ "{:,}".format(p.price) }}</span>
             </div>
-        </div>
-
-        {% if products %}
-        <div class="admin-grid">
-            {% for p in products %}
-            <div class="admin-card">
-                <div class="admin-card-thumb">
-                    {% if p.image %}
-                    <img src="/static/uploads/{{ p.image }}" alt="{{ p.name }}">
-                    {% else %}
-                    <span class="thumb-letter">{{ p.name[0] }}</span>
-                    {% endif %}
-                </div>
-                <div class="admin-card-body">
-                    <h3>{{ p.name }}</h3>
-                    <p class="price">₦{{ "{:,}".format(p.price) }}</p>
-                    <div class="admin-card-actions">
-                        <a href="/admin/products/{{ p.id }}/edit">Edit</a>
-                        <form method="post" action="/admin/products/{{ p.id }}/delete" style="display:inline" onsubmit="return confirm('Delete this product?')">
-                            <button type="submit">Delete</button>
-                        </form>
-                    </div>
+            <div class="row small">
+                <span>{{ p.category.name if p.category else 'No category' }} · {{ "active" if p.active else "hidden" }}</span>
+                <div>
+                    <a href="/admin/products/{{ p.id }}/edit" class="link">edit</a>
+                    <form method="post" action="/admin/products/{{ p.id }}/delete" style="display:inline" onsubmit="return confirm('Delete?')">
+                        <button class="link danger">delete</button>
+                    </form>
                 </div>
             </div>
-            {% endfor %}
-        </div>
+        </li>
         {% else %}
-        <p class="empty">No products yet. Add your first one.</p>
-        {% endif %}
-    </div>
-</body>
-</html>
+        <li class="empty">No items yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

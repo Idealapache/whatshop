@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="confirm-shell">
+    <h1>Request received</h1>
+    <p>Thank you for your rental request. We'll verify availability and logistics, then contact you with your final invoice.</p>
+
+    <div class="receipt">
+        <h3>Your request</h3>
+        <pre>{{ booking.items_summary }}</pre>
+        <p class="receipt-total">Estimated rental total: ₦{{ "{:,}".format(booking.estimated_total) }}</p>
+        <p class="muted">Delivery, setup and logistics calculated separately.</p>
+    </div>
+
+    <a href="{{ wa }}" class="btn btn-primary" target="_blank">
+        Send us a WhatsApp message
+    </a>
+    <a href="/" class="btn btn-secondary">Back to home</a>
+</div>
+<script>localStorage.removeItem("selection");</script>
+{% endblock %}
